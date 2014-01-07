@@ -1,0 +1,3 @@
+Copyright (c) 2013 ANZ
+
+All rights reserved. No warranty, explicit or implicit, provided.
