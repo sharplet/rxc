@@ -21,11 +21,12 @@ module RXC
       action    = action.to_s
       testing   = action == 'test'
 
-      colour    = options.fetch(:colour)    { true }
-      pretty    = options.fetch(:pretty)    { true }
-      workspace = options.fetch(:workspace) { Dir['*.xcworkspace'].sort_by { |ws| File.new(ws).mtime }.first }
-      scheme    = options.fetch(:scheme)    { nil }
-      device    = options.fetch(:device)    { nil } || 'iPad'
+      colour     = options.fetch(:colour)    { true }
+      pretty     = options.fetch(:pretty)    { true }
+      workspace  = options.fetch(:workspace) { Dir['*.xcworkspace'].sort_by { |ws| File.new(ws).mtime }.first }
+      scheme     = options.fetch(:scheme)    { nil }
+      device     = options.fetch(:device)    { nil } || 'iPad'
+      junit_path = options.fetch(:junit)     { nil }
 
       unless scheme
         project_info = {}
@@ -51,11 +52,15 @@ module RXC
       end
 
       if pretty
-        options = ''
-        options << 'c' if colour && STDOUT.tty?
-        options << 't' if testing
+        flags = ''
+        flags << 'c' if colour && STDOUT.tty?
+        flags << 't' if testing
 
-        cmd << " | xcpretty#{' -' + options unless options.empty?}"
+        options = ''
+        options << "-r junit -o #{junit_path}" if junit_path && testing
+
+        cmd << " | xcpretty#{' -' + flags unless flags.empty?}"
+        cmd << " #{options}" unless options.empty?
       end
 
       sh cmd
