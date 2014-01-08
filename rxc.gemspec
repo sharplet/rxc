@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Adam Sharp"]
   spec.email         = ["adam.sharp@outware.com.au"]
   spec.summary       = %q{A collection of utilities for working with Xcode projects.}
-  spec.homepage      = ""
+  spec.homepage      = "http://gitlab.local/grow/rxc"
   spec.license       = "No License"
 
   spec.files         = `git ls-files`.split($/)
@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "geminabox"
 end
