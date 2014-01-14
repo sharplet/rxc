@@ -21,12 +21,13 @@ module RXC
       action    = action.to_s
       testing   = action == 'test'
 
-      colour     = options.fetch(:colour)    { true }
-      pretty     = options.fetch(:pretty)    { true }
-      workspace  = options.fetch(:workspace) { Dir['*.xcworkspace'].sort_by { |ws| File.new(ws).mtime }.first }
-      scheme     = options.fetch(:scheme)    { nil }
-      device     = options.fetch(:device)    { nil } || 'iPad'
-      junit_path = options.fetch(:junit)     { nil }
+      colour        = options.fetch(:colour)        { true }
+      pretty        = options.fetch(:pretty)        { true }
+      workspace     = options.fetch(:workspace)     { Dir['*.xcworkspace'].sort_by { |ws| File.new(ws).mtime }.last }
+      scheme        = options.fetch(:scheme)        { nil }
+      configuration = options.fetch(:configuration) { nil }
+      device        = options.fetch(:device)        { nil } || 'iPad'
+      junit_path    = options.fetch(:junit)         { nil }
 
       unless scheme
         project_info = {}
@@ -45,7 +46,9 @@ module RXC
         scheme = project_info['Schemes'].first
       end
 
-      cmd = "xcodebuild -workspace #{workspace} -scheme #{scheme} -destination 'platform=iOS Simulator,name=#{device}' #{action}"
+      cmd = "xcodebuild -workspace #{workspace} -scheme #{scheme} -destination 'platform=iOS Simulator,name=#{device}'"
+      cmd << " -configuration #{configuration}" if configuration
+      cmd << " #{action}"
 
       if pretty
         flags = ''
