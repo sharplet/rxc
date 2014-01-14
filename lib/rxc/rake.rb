@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module RXC
   module Rake
 
@@ -68,6 +70,17 @@ module RXC
         cmd << " | xcpretty#{' -' + flags unless flags.empty?}"
         cmd << " #{options}" unless options.empty?
       end
+
+      sh cmd
+    end
+
+    def package(codesign_identity: nil, output_dir: 'Package')
+      built_product = Dir['Build/Products/*/*.app'].sort_by { |f| File.new(f).mtime }.last
+      app_name = File.basename(built_product, File.extname(built_product))
+      output_file = File.join(Dir.pwd, output_dir, '%s.ipa' % app_name)
+
+      cmd = "xcrun -sdk iphoneos PackageApplication -v #{built_product} -o #{output_file}"
+      cmd << " -s '#{codesign_identity}'" if codesign_identity
 
       sh cmd
     end
