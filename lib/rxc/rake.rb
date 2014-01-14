@@ -26,6 +26,7 @@ module RXC
       workspace     = options.fetch(:workspace)     { Dir['*.xcworkspace'].sort_by { |ws| File.new(ws).mtime }.last }
       scheme        = options.fetch(:scheme)        { nil }
       configuration = options.fetch(:configuration) { nil }
+      platform      = options.fetch(:platform)      { nil } || 'iOS Simulator'
       device        = options.fetch(:device)        { nil } || 'iPad'
       junit_path    = options.fetch(:junit)         { nil }
 
@@ -46,7 +47,13 @@ module RXC
         scheme = project_info['Schemes'].first
       end
 
-      cmd = "xcodebuild -workspace #{workspace} -scheme #{scheme} -destination 'platform=iOS Simulator,name=#{device}'"
+      if platform == 'iOS'
+        destination = "generic/platform=iOS"
+      else
+        destination = "platform=#{platform},name=#{device}"
+      end
+
+      cmd = "xcodebuild -workspace #{workspace} -scheme #{scheme} -destination '#{destination}'"
       cmd << " -configuration #{configuration}" if configuration
       cmd << " #{action}"
 
