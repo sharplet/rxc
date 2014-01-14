@@ -45,11 +45,7 @@ module RXC
         scheme = project_info['Schemes'].first
       end
 
-      cmd = "xcodebuild -workspace #{workspace} -scheme #{scheme} #{action}"
-
-      if testing
-        cmd << " -destination 'platform=iOS Simulator,name=#{device}'"
-      end
+      cmd = "xcodebuild -workspace #{workspace} -scheme #{scheme} -destination 'platform=iOS Simulator,name=#{device}' #{action}"
 
       if pretty
         flags = ''
