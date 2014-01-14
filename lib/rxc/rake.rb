@@ -75,6 +75,8 @@ module RXC
     end
 
     def package(codesign_identity: nil, output_dir: 'Package')
+      FileUtils.mkdir_p(output_dir)
+
       built_product = Dir['Build/Products/*/*.app'].sort_by { |f| File.new(f).mtime }.last
       app_name = File.basename(built_product, File.extname(built_product))
       output_file = File.join(Dir.pwd, output_dir, '%s.ipa' % app_name)
