@@ -1,4 +1,22 @@
-require "bundler/gem_tasks"
+require 'bundler/gem_tasks'
+require 'rake/testtask'
+
+task :default => [:test]
+
+# =================
+# = Running tests =
+# =================
+
+Rake::TestTask.new do |t|
+  t.test_files = FileList['spec/**/*.rb']
+  t.ruby_opts << '-r"minitest/autorun"'
+  t.ruby_opts << '-r"minitest/pride"'
+  t.libs      << 'spec/helpers'
+end
+
+# =============
+# = Deploying =
+# =============
 
 # disable rubygems push on release
 ENV['gem_push'] = '0'

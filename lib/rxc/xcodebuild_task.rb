@@ -23,6 +23,10 @@ module RXC
 
     attr_accessor :clean_paths
 
+    # A callable object that will be passed the generated shell command
+    # for execution. Default implementation uses Rake's `sh` method.
+    attr_accessor :executor
+
     # True if the build task should look for a default scheme (which is
     # slower than explicitly setting a scheme). Set this to false for a
     # performance boost if your .xcodeproj doesn't require a scheme in
@@ -36,6 +40,7 @@ module RXC
       @runner = 'xcodebuild'
       @pretty = true
       @find_schemes = true
+      @executor = method(:sh)
       yield self if block_given?
       define
       self
@@ -48,10 +53,10 @@ module RXC
           c.add { runner }
           c.add { build_options }
           c.add { task.name }
-          c.add public_method(:formatter_options)
+          c.add method(:formatter_options)
         end
 
-        sh(cmd.to_s)
+        executor.(cmd.to_s)
       end
 
       desc "Clean the project"
