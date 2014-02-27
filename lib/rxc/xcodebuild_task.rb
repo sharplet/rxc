@@ -43,7 +43,6 @@ module RXC
       @executor = method(:sh)
       yield self if block_given?
       define
-      self
     end
 
     def define
