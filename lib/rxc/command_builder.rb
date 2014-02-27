@@ -18,7 +18,7 @@ module RXC
         args << cmd if step.arity == 1
         cmd.push(step.call(*args))
       }
-      cmd.join(' ')
+      cmd.join(' ').strip
     end
   end
 
