@@ -106,6 +106,10 @@ module RXC
       end
     end
 
+    def xcodeproj
+      project_info.xcodeproj || ProjectInfo.format_xcodeproj(@xcodeproj)
+    end
+
     def workspace
       if (@workspace ||= find_workspace) == :noworkspace
         nil

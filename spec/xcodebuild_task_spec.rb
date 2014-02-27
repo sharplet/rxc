@@ -30,13 +30,35 @@ describe XcodebuildTask do
 
     before { build_task.invoke }
 
-    it "uses xcodebuild by default" do
-      @shell_command.must_match(/^xcodebuild/)
+    describe "defaults" do
+      it "uses xcodebuild" do
+        @shell_command.must_match(/^xcodebuild/)
+      end
+
+      it "executes a build action" do
+        @shell_command.must_match(/(?<= )build(?=(\s|$))/)
+      end
     end
 
     describe "custom runner" do
       let(:options) { {:runner => 'xctool'} }
       specify { @shell_command.must_match(/^xctool/) }
+    end
+
+    describe "setting the project" do
+      let(:options) { {:xcodeproj => 'Foo.xcodeproj'} }
+
+      it "sets the -project option" do
+        @shell_command.must_match(/-project Foo.xcodeproj/)
+      end
+
+      describe "with no extension" do
+        let(:options) { {:xcodeproj => 'Foo'} }
+
+        it "automatically adds the .xcodeproj extension" do
+          @shell_command.must_match(/-project Foo.xcodeproj/)
+        end
+      end
     end
   end
 

@@ -2,6 +2,8 @@ module RXC
 
   class ProjectInfo
 
+    XCODEPROJ_EXT = '.xcodeproj'
+
     # The name of the primary Xcode project. If not specified,
     # `xcodebuild`'s default will be used.
     attr_reader :name
@@ -25,22 +27,36 @@ module RXC
     # (defaults to the current working directory)
     attr_reader :basedir
 
+    class << self
+      def format_xcodeproj(name)
+        if name
+          File.basename(name, XCODEPROJ_EXT) + XCODEPROJ_EXT
+        end
+      end
+    end
+
     def initialize(name: nil, basedir: Dir.pwd)
       @name = resolve_name(name)
       @basedir = basedir
     end
 
     def resolve_name(name)
-      # If a project name is not explicitly provided
-      return nil unless name
-
-      projects = Dir["{#{name},*}.xcodeproj"]
-      projects.empty? ? nil : projects.first.sub(/\.xcodeproj$/, '')
+      if name = format_xcodeproj(name)
+        unless Dir[name].empty?
+          name.sub(/#{XCODEPROJ_EXT}$/, '')
+        end
+      end
     end
     private :resolve_name
 
     def xcodeproj
-      name ? "#{name}.xcodeproj" : nil
+      if name
+        name + XCODEPROJ_EXT
+      end
+    end
+
+    def format_xcodeproj(name)
+      self.class.format_xcodeproj(name)
     end
 
     def workspaces
